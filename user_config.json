@@ -1,0 +1,43 @@
+{
+    "protocols": {
+        "work": {
+            "configured": true,
+            "apps": [
+                "C:\\Users\\nicho\\AppData\\Local\\Programs\\Antigravity\\Antigravity.exe"
+            ],
+            "music": "AC/DC - Back in Black",
+            "brightness": 85,
+            "volume": "ABBASSA"
+        },
+        "gaming": {
+            "configured": false,
+            "apps_to_close": [
+                "code",
+                "notepad"
+            ],
+            "brightness": 100,
+            "volume": "AUMENTA"
+        },
+        "night": {
+            "configured": false,
+            "brightness": 15,
+            "volume": "MUTA"
+        }
+    },
+    "voice": {
+        "wake_words": [
+            "galileo",
+            "jarvis",
+            "ehi galileo",
+            "hey galileo",
+            "ok galileo",
+            "galilei"
+        ],
+        "silence_duration": 0.8,
+        "max_duration": 10.0,
+        "vad_sensitivity": 2.2,
+        "language": "it-IT",
+        "enabled": false
+    },
+    "theme": "stark"
+}
