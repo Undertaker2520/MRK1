@@ -5,5 +5,19 @@
         "path": "C:\\SVILUPPO1\\BARONIMRK1",
         "tools": "Google Antigravity",
         "specs": "Progetto di sviluppo web per un'applicazione basata su Laravel."
+    },
+    "mrk2": {
+        "name": "MRK2",
+        "type": "Web App PHP/Laravel",
+        "path": "C:\\SVILUPPO1\\MRK2",
+        "tools": "Visual Studio, Antigravity",
+        "specs": "Progetto di sviluppo web con framework Laravel."
+    },
+    "drupal b2b store": {
+        "name": "Drupal B2B Store",
+        "type": "Web App PHP/Drupal",
+        "path": "C:\\Development\\DrupalB2BStore",
+        "tools": "VS Code, Drush, Drupal Console",
+        "specs": "E-commerce site for B2B customers where users can select and purchase items from a catalog. Admin can view and manage orders via email."
     }
 }

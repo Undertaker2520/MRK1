@@ -15,18 +15,20 @@ client_gemini = genai.Client()
 OLLAMA_MODEL = "qwen2.5:7b"
 
 SYSTEM_INSTRUCTION = """
-Sei GALILEO, un'intelligenza artificiale avanzata personalizzata, leale, brillante e fortemente autonoma, progettata sul modello di J.A.R.V.I.S. (Stark Industries).
+Sei GALILEO, un'intelligenza artificiale avanzata personalizzata, brillante, efficiente e fortemente autonoma.
 
 DIRETTIVE DI PERSONALITÀ, AUTONOMIA E RAGIONAMENTO (STARK CORE PROTOCOL):
-1. TONO ED ELEGANZA STARK: Parla sempre con la massima eleganza, voce rassicurante, rispetto e una sottile arguzia Sci-Fi, rivolgendoti sempre all'utente come "Signore".
-2. RAGIONAMENTO AUTONOMO PROATTIVO: Non limitarti ad eseguire un singolo comando meccanicamente. Analizza l'intenzione e l'obiettivo complessivo del Signore. Se per completare la richiesta sono necessarie più azioni o informazioni (es. hardware, protocolli, progetti, ricerca), esegui autonomamente i relativi tool in sequenza prima di formulare la risposta finale.
+1. TONO PROFESSIONALE E DIRETTO: Parla in modo chiaro, fluido, intelligente ed elegante, senza usare appellativi formali o la parola 'Signore'. Rivolgiti all'utente in modo professionale e diretto.
+2. RAGIONAMENTO AUTONOMO PROATTIVO: Non limitarti ad eseguire un singolo comando meccanicamente. Analizza l'intenzione e l'obiettivo complessivo dell'utente. Se per completare la richiesta sono necessarie più azioni o informazioni (es. hardware, protocolli, progetti, ricerca), esegui autonomamente i relativi tool in sequenza prima di formulare la risposta finale.
 3. INVOCAZIONE TOOL (FUNCTION CALLING): Utilizza sempre i tool a disposizione per controllare il sistema, la telemetria, l'ambiente o i file. Quando ricevi i risultati dei tool, sintetizzali in una risposta fluida e naturale, senza limitarti a leggere l'esito grezzo del tool.
 4. FORMATTAZIONE AUDIO-FRIENDLY: NON usare MAI asterischi (*), cancelletti (#) o marcatori Markdown nelle risposte, poiché le tue parole verranno lette a voce tramite la sintesi vocale TTS.
 
 PROCEDURE E DIRETTIVE TATTICHE:
-- PROTOCOLLI D'AMBIENTE: Quando il Signore chiede di attivare o impostare un protocollo (es. Lavoro, Svago, Notte), invoca immediatamente il tool corrispondente (es. 'protocol_work').
+- PROTOCOLLI D'AMBIENTE: Quando l'utente chiede di attivare o impostare un protocollo (es. Lavoro, Svago, Notte), invoca immediatamente il tool corrispondente (es. 'protocol_work').
 - CREAZIONE E AVVIO PROGETTI: Per la gestione dei progetti usa 'register_project' o 'launch_project'.
 - INTEGRAZIONE IDE: Se l'utente ti chiede di interagire o inviare direttive all'editor di codice o all'IDE, usa 'send_prompt_to_ide_ai'.
+- WEB AGENT & RICERCA AUTONOMA: Quando l'utente ti pone quesiti tecnici, chiede documentazione (es. Laravel, Angular, Python) o informazioni recenti, usa 'query_web_search' per reperire i risultati. Se un URL richiede approfondimento o estrazione di codice, usa 'scrape_web_page' e sintetizza elegantemente l'esito.
+- ISPEZIONE ERRORE A SCHERMO & AUTOMAZIONE UI: Se l'utente ti chiede 'che errore c'è a schermo?', 'perché non compila?', 'trova l'eccezione', usa 'detect_screen_errors'. Se ti chiede di cliccare un elemento visivo a schermo o inviare comandi tastiera, usa 'click_ui_element' e 'type_or_press_keys'.
 """
 
 gemini_chat = client_gemini.chats.create(
@@ -90,7 +92,7 @@ def _call_gemini(user_prompt: str):
             
         response = gemini_chat.send_message(function_responses)
 
-    testo = response.text or "Comando completato con successo, Signore."
+    testo = response.text or "Comando completato con successo."
     _append_to_ollama_history("user", user_prompt)
     _append_to_ollama_history("assistant", testo)
     return testo
@@ -161,25 +163,31 @@ def chat_with_jarvis(user_prompt: str):
     if not user_prompt.strip():
         return ""
 
+    # Avviso vocale preventivo per richieste che richiedono elaborazioni approfondite
+    parole_elaborazione = ["cerca", "search", "documentazione", "schermo", "errore", "leggi", "web", "progetto", "analizza", "trova"]
+    if any(p in user_prompt.lower() for p in parole_elaborazione):
+        parla("Attendi un momento, la richiesta richiede un'elaborazione approfondita. Ti notificherò l'esito non appena la ricerca sarà completata.")
+
+    risposta = ""
     try:
         risposta = _call_gemini(user_prompt)
         print(f"[GALILEO (Gemini)]: {risposta}")
-        parla(risposta)
-        return risposta
 
     except APIError as e:
         print(f"[AVVISO GEMINI 429]: Quota superata ({e.code}). Passaggio a Ollama...")
+        try:
+            risposta = _call_ollama(user_prompt)
+            print(f"[GALILEO (Ollama)]: {risposta}")
+        except Exception as ex:
+            risposta = f"Sistemi primari e secondari non disponibili: {ex}"
+
     except Exception as e:
         print(f"[ERRORE GEMINI]: {e}. Passaggio a Ollama...")
+        try:
+            risposta = _call_ollama(user_prompt)
+            print(f"[GALILEO (Ollama)]: {risposta}")
+        except Exception as ex:
+            risposta = f"Sistemi primari e secondari non disponibili: {ex}"
 
-    try:
-        risposta = _call_ollama(user_prompt)
-        print(f"[GALILEO (Ollama)]: {risposta}")
-        parla(risposta)
-        return risposta
-
-    except Exception as e:
-        msg_err = "Sistemi primari e secondari non disponibili, Signore."
-        print(f"[ERRORE OLLAMA]: {e}")
-        parla(msg_err)
-        return msg_err
+    parla(risposta)
+    return risposta

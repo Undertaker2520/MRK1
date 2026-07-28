@@ -97,7 +97,7 @@ def update_protocol_preferences(protocol_name: str, key: str, value: str = "") -
         cfg["protocols"][target_protocol][key] = val_to_store
         cfg["protocols"][target_protocol]["configured"] = True
         save_config(cfg)
-        return f"Preferenze aggiornate per il Protocollo '{target_protocol}': {key} impostato su '{val_to_store}', Signore."
+        return f"Preferenze aggiornate per il Protocollo '{target_protocol}': {key} impostato su '{val_to_store}'."
     
     return f"Protocollo '{protocol_name}' non trovato."
 
@@ -123,4 +123,4 @@ def save_project_data(project_name: str, data: dict) -> str:
     projects[p_key] = data
     with open(PROJECTS_FILE, 'w', encoding='utf-8') as f:
         json.dump(projects, f, indent=4, ensure_ascii=False)
-    return f"Progetto '{project_name}' archiviato con successo nel sistema, Signore."
+    return f"Progetto '{project_name}' archiviato con successo nel sistema."

@@ -41,7 +41,7 @@ def launch_project(name: str) -> str:
     p_key = name.lower().strip()
     
     if p_key not in projects:
-        return f"Nessun progetto trovato corrispondente a '{name}', Signore."
+        return f"Nessun progetto trovato corrispondente a '{name}'."
         
     p = projects[p_key]
     path = p.get("path", "")
@@ -55,7 +55,7 @@ def launch_project(name: str) -> str:
             open_application("code")
             
     recap = (
-        f"Avvio del progetto '{p['name']}' in corso, Signore. "
+        f"Avvio del progetto '{p['name']}' in corso. "
         f"Tipologia: {p['type']}. "
         f"Percorso principale: {path}. "
         f"Requisiti fondamentali: {p['specs']}. "

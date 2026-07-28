@@ -125,7 +125,7 @@ class JarvisGUI(ctk.CTk):
             self.is_processing = True
             self.update_status("PROCESSING...", "PROCESSING")
             prompt_sicuro = (
-                "Esegui il tool 'get_tactical_briefing' e saluta il Signore in perfetto stile J.A.R.V.I.S. "
+                "Esegui il tool 'get_tactical_briefing' e dai il benvenuto in modo chiaro ed elegante. "
                 "NON usare la ricerca web 'search_web'."
             )
             response = chat_with_jarvis(prompt_sicuro)
@@ -286,7 +286,7 @@ class JarvisGUI(ctk.CTk):
                         self.safe_log_message("VOICE_INPUT", f"Galileo {comando}")
                         self._handle_voice_command(comando)
                     else:
-                        parla("In ascolto, Signore.")
+                        parla("In ascolto.")
                         self.safe_update_status("IN ASCOLTO COMANDO...", "LISTENING")
                         nuovo_comando = ascolta(status_callback=voice_status_callback)
                         if nuovo_comando and self.voice_mode_enabled:
@@ -301,7 +301,7 @@ class JarvisGUI(ctk.CTk):
         self.is_processing = True
         
         if any(w in comando.lower() for w in ["riposo", "modalità riposo", "vai a riposo", "standby"]):
-            parla("Attivazione modalità riposo. Blocco lo schermo e rimango in ascolto, Signore.")
+            parla("Attivazione modalità riposo. Blocco lo schermo e rimango in ascolto.")
             self.after(1000, self.enter_sleep_mode)
         else:
             self.safe_update_status("PROCESSING CORE...", "PROCESSING")
@@ -323,8 +323,10 @@ class JarvisGUI(ctk.CTk):
     def _process_command_text(self, command: str):
         self.is_processing = True
         self.update_status("PROCESSING CORE...", "PROCESSING")
+        
         response = chat_with_jarvis(command)
         if response:
             self.log_message("GALILEO", response)
+
         self.is_processing = False
         self.update_status("SYSTEM ONLINE", "ONLINE")

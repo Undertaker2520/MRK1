@@ -39,17 +39,17 @@ def analyze_screen(prompt_utente: str = "Cosa c'è sullo schermo?") -> str:
             model="gemini-2.0-flash",
             contents=[
                 types.Part.from_bytes(data=img_bytes, mime_type="image/png"),
-                f"Sei GALILEO (J.A.R.V.I.S.). Analizza lo schermo e rispondi al Signore in massimo 2 frasi concise ed eleganti alla sua richiesta: {prompt_utente}"
+                f"Sei GALILEO. Analizza lo schermo e rispondi in massimo 2 frasi concise ed eleganti alla richiesta: {prompt_utente}"
             ]
         )
-        return response.text or "Nessun elemento rilevante identificato sullo schermo, Signore."
+        return response.text or "Nessun elemento rilevante identificato sullo schermo."
         
     except Exception as e:
         err_msg = str(e)
         # Gestione pulita del rate-limit senza leggere stringhe JSON
         if "429" in err_msg or "RESOURCE_EXHAUSTED" in err_msg or "Quota" in err_msg:
-            return "Modulo visivo momentaneamente non disponibile per limite di quota Cloud, Signore."
-        return "Impossibile completare l'analisi visiva dello schermo in questo momento, Signore."
+            return "Modulo visivo momentaneamente non disponibile per limite di quota Cloud."
+        return "Impossibile completare l'analisi visiva dello schermo in questo momento."
 
 def volume_control(action: str) -> str:
     """Controlla il volume del PC (MUTA, AUMENTA, ABBASSA)."""

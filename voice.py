@@ -16,7 +16,7 @@ import edge_tts
 pygame.mixer.quit()
 pygame.mixer.init(frequency=44100, size=-16, channels=2, buffer=1024)
 
-VOICE = "it-IT-DiegoNeural"
+VOICE = "it-IT-GiuseppeNeural"
 audio_lock = threading.Lock()
 
 def clean_text_for_speech(text: str) -> str:
@@ -61,33 +61,61 @@ def play_hud_sound(sound_type: str = "activate"):
 
 async def _genera_audio(testo: str, output_file: str):
     testo_pulito = clean_text_for_speech(testo)
-    communicate = edge_tts.Communicate(testo_pulito, VOICE)
+    communicate = edge_tts.Communicate(testo_pulito, VOICE, rate="+20%")
     await communicate.save(output_file)
 
+STATIC_CACHE_DIR = "audio_cache"
+if not os.path.exists(STATIC_CACHE_DIR):
+    os.makedirs(STATIC_CACHE_DIR, exist_ok=True)
+
+import hashlib
+
 def parla(testo: str, async_play: bool = True):
-    """Sintetizza e riproduce l'audio. Se async_play è True, viene eseguito in un thread separato senza bloccare l'interfaccia."""
+    """Sintetizza e riproduce l'audio. Se async_play è True, viene eseguito in un thread separato senza bloccare l'interfaccia.
+    Utilizza un sistema di Caching locale per le frasi ricorrenti per azzerare la latenza TTS.
+    """
     if not testo:
         return
 
     def _worker():
         with audio_lock:
-            file_audio = f"temp_response_{threading.get_ident()}.mp3"
+            testo_clean = clean_text_for_speech(testo)
+            hash_name = hashlib.md5(testo_clean.encode('utf-8')).hexdigest()
+            cached_file = os.path.join(STATIC_CACHE_DIR, f"{hash_name}.mp3")
+            
+            is_temp = False
+            file_to_play = cached_file
+
+            if not os.path.exists(cached_file):
+                file_to_play = f"temp_response_{threading.get_ident()}.mp3"
+                is_temp = True
+                try:
+                    asyncio.run(_genera_audio(testo_clean, file_to_play))
+                    if len(testo_clean) <= 100:
+                        try:
+                            import shutil
+                            shutil.copy(file_to_play, cached_file)
+                        except Exception:
+                            pass
+                except Exception as e:
+                    print(f"[ERRORE TTS]: {e}")
+                    return
+
             try:
-                asyncio.run(_genera_audio(testo, file_audio))
-                pygame.mixer.music.load(file_audio)
+                pygame.mixer.music.load(file_to_play)
                 pygame.mixer.music.play()
                 
                 while pygame.mixer.music.get_busy():
                     pygame.time.Clock().tick(20)
                     
                 pygame.mixer.music.unload()
-                if os.path.exists(file_audio):
+                if is_temp and os.path.exists(file_to_play):
                     try:
-                        os.remove(file_audio)
+                        os.remove(file_to_play)
                     except Exception:
                         pass
             except Exception as e:
-                print(f"[ERRORE TTS]: {e}")
+                print(f"[ERRORE AUDIO PLAYBACK]: {e}")
 
     if async_play:
         threading.Thread(target=_worker, daemon=True).start()

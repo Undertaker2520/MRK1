@@ -3,7 +3,8 @@
         "work": {
             "configured": true,
             "apps": [
-                "C:\\Users\\nicho\\AppData\\Local\\Programs\\Antigravity\\Antigravity.exe"
+                "Visual Studio",
+                "Antigravity"
             ],
             "music": "AC/DC - Back in Black",
             "brightness": 85,
@@ -33,7 +34,7 @@
             "ok galileo",
             "galilei"
         ],
-        "silence_duration": 0.8,
+        "silence_duration": 0.45,
         "max_duration": 10.0,
         "vad_sensitivity": 2.2,
         "language": "it-IT",

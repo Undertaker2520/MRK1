@@ -6,7 +6,13 @@ from tools_hardware import (
     screen_shot, analyze_screen, volume_control, brightness_control, 
     get_system_status, get_tactical_briefing
 )
-from tools_web import search_web, play_youtube_video, media_control, read_clipboard, set_timer
+from tools_vision import (
+    detect_screen_errors, click_ui_element, type_or_press_keys
+)
+from tools_web import (
+    search_web, query_web_search, background_web_search, scrape_web_page, 
+    play_youtube_video, media_control, read_clipboard, set_timer
+)
 from tools_protocols import protocol_work, protocol_gaming, protocol_night
 from config_manager import update_protocol_preferences
 from tools_projects import register_project, launch_project
@@ -26,12 +32,18 @@ AVAILABLE_TOOLS = {
     # Hardware, Telemetry & Vision Tools
     'screen_shot': screen_shot,
     'analyze_screen': analyze_screen,
+    'detect_screen_errors': detect_screen_errors,
+    'click_ui_element': click_ui_element,
+    'type_or_press_keys': type_or_press_keys,
     'volume_control': volume_control,
     'brightness_control': brightness_control,
     'get_system_status': get_system_status,
     'get_tactical_briefing': get_tactical_briefing,
     
-    # Web & Utility Tools
+    # Web Agent & Utility Tools
+    'query_web_search': query_web_search,
+    'background_web_search': background_web_search,
+    'scrape_web_page': scrape_web_page,
     'search_web': search_web,
     'play_youtube_video': play_youtube_video,
     'media_control': media_control,

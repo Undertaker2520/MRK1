@@ -31,7 +31,7 @@ def protocol_work() -> str:
     cfg = load_config()["protocols"]["work"]
     
     if not is_protocol_configured(cfg):
-        return "Signore, non ho ancora registrato le sue preferenze per il Protocollo Lavoro. Quali applicazioni o IDE desidera utilizzare e quale musica vuole ascoltare?"
+        return "Non ho ancora registrato le preferenze per il Protocollo Lavoro. Quali applicazioni o IDE desideri utilizzare e quale musica vuoi ascoltare?"
 
     results = []
     # 1. Hardware
@@ -48,7 +48,7 @@ def protocol_work() -> str:
     if music:
         results.append(play_youtube_video(music))
         
-    return "Protocollo Lavoro eseguito: ambiente configurato, applicazioni avviate e musica in riproduzione, Signore."
+    return "Protocollo Lavoro eseguito: ambiente configurato, applicazioni avviate e musica in riproduzione."
 
 def protocol_gaming() -> str:
     """Esegue le azioni del Protocollo Svago/Gaming."""
@@ -61,7 +61,7 @@ def protocol_gaming() -> str:
     brightness_control(cfg.get("brightness", 100))
     volume_control(cfg.get("volume", "AUMENTA"))
     
-    return "Protocollo Svago attivato, Signore. Ambiente pronto e risorse liberate."
+    return "Protocollo Svago attivato. Ambiente pronto e risorse liberate."
 
 def protocol_night() -> str:
     """Esegue le azioni del Protocollo Notte."""
@@ -69,4 +69,4 @@ def protocol_night() -> str:
     brightness_control(cfg.get("brightness", 15))
     volume_control(cfg.get("volume", "MUTA"))
     lock_pc()
-    return "Protocollo Notte completato. Buonanotte, Signore."
+    return "Protocollo Notte completato. Buonanotte."
